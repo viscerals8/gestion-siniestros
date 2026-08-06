@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.inspection import inspect
 from typing import List, Dict, Any
@@ -66,16 +66,13 @@ def obtener_registro(registro_id: int, db: Session = Depends(get_db)):
 def agregar_registro(
     datos: RegistroRequest,
     db: Session = Depends(get_db),
-    x_user_id: int = Header(..., alias="X-User-Id"),
+    current_user: dict = Depends(get_current_user),
 ):
     """Inserta un nuevo registro híbrido (fijo + dinámico)."""
     try:
-        print("📦 Datos recibidos del frontend:\n", datos.root)
-        nuevo = TablaService.agregar_registro(db, datos.root, user_id=x_user_id)
-        print("✅ Registro insertado correctamente")
+        nuevo = TablaService.agregar_registro(db, datos.root, user_id=int(current_user["sub"]))
         return RegistroResponse(root=sa_to_dict(nuevo))
     except Exception as e:
-        print("❌ ERROR al insertar registro:", str(e))
         raise HTTPException(status_code=400, detail=f"Error al agregar registro: {str(e)}")
 
 
@@ -84,10 +81,10 @@ def actualizar_registro(
     registro_id: int,
     datos: RegistroRequest,
     db: Session = Depends(get_db),
-    x_user_id: int = Header(..., alias="X-User-Id"),
+    current_user: dict = Depends(get_current_user),
 ):
     """Actualiza un registro existente y sus campos dinámicos."""
-    actualizado = TablaService.actualizar_registro(db, registro_id, datos.root, user_id=x_user_id)
+    actualizado = TablaService.actualizar_registro(db, registro_id, datos.root, user_id=int(current_user["sub"]))
     if not actualizado:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
     return RegistroResponse(root=sa_to_dict(actualizado))
@@ -97,8 +94,8 @@ def actualizar_registro(
 def eliminar_registro(
     registro_id: int,
     db: Session = Depends(get_db),
-    x_user_id: int = Header(..., alias="X-User-Id"),
+    current_user: dict = Depends(get_current_user),
 ):
     """Elimina un registro por su ID."""
-    TablaService.eliminar_registro(db, registro_id, user_id=x_user_id)
+    TablaService.eliminar_registro(db, registro_id, user_id=int(current_user["sub"]))
     return {"detail": "Registro eliminado correctamente"}
