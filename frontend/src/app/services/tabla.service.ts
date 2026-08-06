@@ -8,8 +8,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ApiService } from './api.service';
-// NUEVO: tomamos el usuario activo para enviar su ID al backend
-import { LoginService } from './login.service';
 
 // ===============================================================
 // Interface principal alineada al modelo FastAPI
@@ -81,16 +79,7 @@ export class TablaService {
   private registrosSubject = new BehaviorSubject<Registro[]>([]);
   public registros$ = this.registrosSubject.asObservable();
 
-  // NUEVO: inyectamos LoginService (no afecta a nada existente)
-  constructor(private api: ApiService, private login: LoginService) {}
-
-  // NUEVO: header con el ID de usuario para el backend (X-User-Id)
-  private authHeaders() {
-    const u: any = this.login.getUsuarioSesion?.();
-    // Soporta tanto u.id como u.UserID (según tu sesión actual)
-    const id = (u?.id ?? u?.UserID ?? '').toString();
-    return id ? { 'X-User-Id': id } : {};
-  }
+  constructor(private api: ApiService) {}
 
   // ===============================================================
   // GET → obtiene todos los registros
@@ -121,20 +110,11 @@ export class TablaService {
   // ===============================================================
   agregarRegistroFastAPI(registro: Omit<Registro, 'AccidentID'>): Observable<Registro> {
     const payload = this.serializarSalida(registro);
-    console.log('📤 Enviando datos al backend (POST):', payload);
 
-    // NUEVO: agregamos X-User-Id sin cambiar el resto
-    return this.api.post<Registro>(`${this.base}/`, payload, {
-      headers: { 'Content-Type': 'application/json', ...this.authHeaders() },
-    }).pipe(
+    return this.api.post<Registro>(`${this.base}/`, payload).pipe(
       tap({
-        next: (res) => {
-          console.log('✅ Registro agregado correctamente:', res);
-          this.obtenerRegistros().subscribe();
-        },
-        error: (err) => {
-          console.error('❌ Error al agregar registro:', err);
-        },
+        next: () => this.obtenerRegistros().subscribe(),
+        error: (err) => console.error('Error al agregar registro:', err),
       })
     );
   }
@@ -144,20 +124,11 @@ export class TablaService {
   // ===============================================================
   actualizarRegistroFastAPI(id: number, registro: Omit<Registro, 'AccidentID'>): Observable<Registro> {
     const payload = this.serializarSalida(registro);
-    console.log('📤 Enviando datos al backend (PUT):', payload);
 
-    // NUEVO: agregamos X-User-Id sin cambiar el resto
-    return this.api.put<Registro>(`${this.base}/${id}`, payload, {
-      headers: { 'Content-Type': 'application/json', ...this.authHeaders() },
-    }).pipe(
+    return this.api.put<Registro>(`${this.base}/${id}`, payload).pipe(
       tap({
-        next: (res) => {
-          console.log('✅ Registro actualizado correctamente:', res);
-          this.obtenerRegistros().subscribe();
-        },
-        error: (err) => {
-          console.error('❌ Error al actualizar registro:', err);
-        },
+        next: () => this.obtenerRegistros().subscribe(),
+        error: (err) => console.error('Error al actualizar registro:', err),
       })
     );
   }
@@ -166,20 +137,10 @@ export class TablaService {
   // DELETE → elimina un registro
   // ===============================================================
   eliminarRegistroFastAPI(id: number): Observable<{ detail: string }> {
-    console.log('🗑 Eliminando registro ID:', id);
-
-    // NUEVO: agregamos X-User-Id sin cambiar el resto
-    return this.api.delete<{ detail: string }>(`${this.base}/${id}`, {
-      headers: this.authHeaders(),
-    }).pipe(
+    return this.api.delete<{ detail: string }>(`${this.base}/${id}`).pipe(
       tap({
-        next: () => {
-          console.log('✅ Registro eliminado correctamente');
-          this.obtenerRegistros().subscribe();
-        },
-        error: (err) => {
-          console.error('❌ Error al eliminar registro:', err);
-        },
+        next: () => this.obtenerRegistros().subscribe(),
+        error: (err) => console.error('Error al eliminar registro:', err),
       })
     );
   }
