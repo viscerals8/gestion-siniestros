@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 from ..db.database import get_db
 from ..schemas import ExternalProjectImport
 from ..services.external_import_service import import_external_projects_service  # ← IMPORT CLAVE
+from ..utils.security import get_current_user
 
-router = APIRouter(prefix="/import", tags=["Importación"])
+router = APIRouter(prefix="/import", tags=["Importación"], dependencies=[Depends(get_current_user)])
 
 @router.post("/external-projects")
 def import_external_projects_endpoint(payload: ExternalProjectImport, db: Session = Depends(get_db)):

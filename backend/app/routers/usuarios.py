@@ -3,12 +3,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..services.gestion_usuarios_service import GestionUsuariosService
 from ..db.database import get_db
+from ..utils.security import require_roles
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List
 
 router = APIRouter(
     prefix="/usuarios",
-    tags=["Usuarios"]
+    tags=["Usuarios"],
+    dependencies=[Depends(require_roles("Administrador"))],
 )
 
 # Schemas de entrada

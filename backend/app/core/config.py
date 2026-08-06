@@ -21,9 +21,6 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    # Contraseña de bypass de emergencia para login (opcional; si no se define en .env, el bypass queda deshabilitado)
-    EMERGENCY_BYPASS_PASSWORD: str = ""
-
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True,
