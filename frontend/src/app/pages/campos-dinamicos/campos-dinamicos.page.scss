@@ -1,0 +1,179 @@
+/* Padding general del contenido */
+.ion-padding {
+  padding: 1rem;
+}
+
+/* Contenedor con scroll horizontal para tablas anchas */
+.tabla-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tabla de registros */
+.registros-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  th,
+  td {
+    border: 1px solid var(--ion-color-light-shade, #e0e0e0);
+    padding: 0.5rem 0.6rem;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: var(--ion-color-light);
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  /* Zebra + hover */
+  tbody tr:nth-child(odd) {
+    background: var(--ion-color-light);
+  }
+  tbody tr:hover {
+    background: rgba(var(--ion-color-primary-rgb), 0.08);
+  }
+
+  /* Controles embebidos en celdas */
+  input,
+  select,
+  ion-toggle {
+    width: 100%;
+  }
+
+  /* Inputs/select nativos en celdas */
+  input,
+  select {
+    border: none;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    padding: 0.25rem 0.35rem;
+    height: 36px;
+  }
+
+  /* Evitar que el select rompa el layout */
+  select {
+    min-width: 160px;
+  }
+
+  /* IonToggle afinado para tabla */
+  ion-toggle {
+    --handle-width: 20px;
+    --handle-height: 20px;
+    --handle-spacing: 4px;
+    --track-background: #d1d5db;
+    --track-background-checked: var(--ion-color-primary);
+    height: 28px;
+  }
+
+  /* Botón de borrar en la columna de acciones */
+  td:last-child ion-button {
+    --padding-start: 0.25rem;
+    --padding-end: 0.25rem;
+    --border-radius: 6px;
+  }
+}
+
+/* Card de acceso denegado (respetando tu diseño) */
+ion-card[color="danger"] {
+  --background: rgba(var(--ion-color-danger-rgb), 0.08);
+  --color: var(--ion-color-danger);
+  border: 1px solid var(--ion-color-danger);
+  margin-top: 1rem;
+  text-align: center;
+
+  ion-card-title {
+    font-weight: 700;
+  }
+}
+
+/* Ajustes del card contenedor para respiración visual */
+ion-card {
+  border-radius: var(--app-radius, 12px);
+  overflow: hidden;
+
+  ion-card-header {
+    background: var(--ion-color-light);
+  }
+}
+
+/* Scrollbar sutil (soporta WebKit) */
+.tabla-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.tabla-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+.tabla-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+.tabla-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive: en pantallas chicas, reduce tipografías y paddings */
+@media (max-width: 768px) {
+  .registros-table {
+    font-size: 0.9rem;
+
+    th, td {
+      padding: 0.4rem 0.5rem;
+    }
+
+    select {
+      min-width: 140px;
+    }
+  }
+}
+
+/* Modo oscuro (si usas prefers-color-scheme) */
+@media (prefers-color-scheme: dark) {
+  .registros-table {
+    th {
+      background-color: #1f2937;
+      color: #e5e7eb;
+    }
+    td, th {
+      border-color: #374151;
+    }
+    tbody tr:nth-child(odd) {
+      background: #111827;
+    }
+    tbody tr:hover {
+      background: rgba(var(--ion-color-primary-rgb), 0.18);
+    }
+
+    input, select {
+      color: #e5e7eb;
+    }
+
+    ion-toggle {
+      --track-background: #4b5563;
+      --track-background-checked: var(--ion-color-primary);
+    }
+  }
+
+  ion-card[color="danger"] {
+    --background: #3f1f25;
+    --color: #fca5a5;
+    border-color: #ef4444;
+  }
+
+  ion-card ion-card-header {
+    background: #111827;
+  }
+}

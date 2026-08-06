@@ -1,0 +1,83 @@
+.ion-padding {
+  padding: 1rem;
+}
+
+/* Cards */
+ion-card {
+  margin: 1rem;
+  box-shadow: var(--app-shadow, 0 4px 8px rgba(0,0,0,.1));
+  border-radius: var(--app-radius, 12px);
+}
+ion-card-header {
+  background: var(--ion-color-light);
+}
+
+/* Contenedor con scroll horizontal para la tabla */
+.tabla-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tabla */
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: .95rem;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  th, td {
+    border: 1px solid var(--ion-color-light-shade, #ddd);
+    padding: .75rem;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: var(--ion-color-light);
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  tbody tr:nth-child(even) { background-color: var(--ion-color-light); }
+  tbody tr:hover { background-color: rgba(var(--ion-color-primary-rgb), 0.08); }
+}
+
+/* Botón/selector de fecha ocupando todo el ancho del item */
+ion-datetime-button {
+  width: 100%;
+  justify-content: start;
+  text-align: left;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
+}
+
+/* Scrollbar sutil (WebKit) */
+.tabla-scroll::-webkit-scrollbar { height: 8px; }
+.tabla-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+.tabla-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+.tabla-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .historial-table { font-size: .9rem; }
+  .historial-table th, .historial-table td { padding: .55rem .6rem; }
+}
+
+/* Dark mode opcional */
+@media (prefers-color-scheme: dark) {
+  ion-card-header { background: #111827; }
+  .historial-table {
+    th { background-color: #1f2937; color: #e5e7eb; }
+    th, td { border-color: #374151; }
+    tbody tr:nth-child(even) { background-color: #111827; }
+    tbody tr:hover { background-color: rgba(var(--ion-color-primary-rgb), 0.18); }
+  }
+}

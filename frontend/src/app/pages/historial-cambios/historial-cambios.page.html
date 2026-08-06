@@ -1,0 +1,170 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Historial de Cambios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Filtros -->
+  <ion-card class="ion-margin-bottom">
+    <ion-card-header>
+      <ion-card-title>Filtros</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+
+      <!-- Usuario -->
+      <ion-item>
+        <ion-label position="floating">Usuario (ID)</ion-label>
+        <ion-select
+          [(ngModel)]="filtroUsuario"
+          name="filtroUsuario"
+          placeholder="Todos"
+        >
+          <ion-select-option value="">
+            Todos
+          </ion-select-option>
+          <ion-select-option
+            *ngFor="let u of usuariosDisponibles"
+            [value]="u"
+          >
+            {{ u }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Campo afectado -->
+      <ion-item>
+        <ion-label position="floating">Campo Afectado</ion-label>
+        <ion-select
+          [(ngModel)]="filtroCampo"
+          name="filtroCampo"
+          placeholder="Todos"
+        >
+          <ion-select-option value="">
+            Todos
+          </ion-select-option>
+          <ion-select-option
+            *ngFor="let campo of camposDisponibles"
+            [value]="campo"
+          >
+            {{ campo }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Fechas -->
+      <ion-item>
+        <ion-label>Fecha Inicio</ion-label>
+        <ion-datetime-button datetime="dtInicio"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime
+              id="dtInicio"
+              presentation="date"
+              [(ngModel)]="filtroFechaInicio"
+              name="filtroFechaInicio"
+            ></ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Fecha Fin</ion-label>
+        <ion-datetime-button datetime="dtFin"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime
+              id="dtFin"
+              presentation="date"
+              [(ngModel)]="filtroFechaFin"
+              name="filtroFechaFin"
+            ></ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+
+      <!-- Botones de acción -->
+      <ion-button
+        expand="block"
+        (click)="aplicarFiltros()"
+        class="ion-margin-top"
+      >
+        Aplicar Filtros
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="limpiarFiltros()"
+        class="ion-margin-top"
+      >
+        Limpiar Filtros
+      </ion-button>
+
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Resultados -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Resultados del Historial</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="tabla-scroll">
+        <table
+          class="historial-table"
+          *ngIf="historialFiltrado.length > 0"
+        >
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Usuario (ID)</th>
+              <th>Tipo de Acción</th>
+              <th>Sección Afectada</th>
+              <th>Campo Afectado</th>
+              <th>Valor Anterior</th>
+              <th>Valor Nuevo</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let entry of historialFiltrado">
+              <td>{{ entry.id }}</td>
+              <td>{{ entry.fecha | date:'medium' }}</td>
+              <td>{{ entry.user_id }}</td>
+              <td>{{ entry.tipo_accion }}</td>
+              <td>{{ entry.seccion_afectada || '-' }}</td>
+              <td>{{ entry.campo_afectado || '-' }}</td>
+              <td>{{ formatValueForDisplay(entry.valor_anterior) }}</td>
+              <td>{{ formatValueForDisplay(entry.valor_nuevo) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p
+          *ngIf="historialFiltrado.length === 0"
+          class="ion-text-center"
+        >
+          No hay entradas en el historial que coincidan con los filtros.
+        </p>
+      </div>
+
+      <!-- Solo Admin y Editor pueden exportar -->
+      <ion-button
+        expand="block"
+        (click)="exportarCSV()"
+        class="ion-margin-top"
+        *ngIf="puedeEditar()"
+      >
+        Exportar a CSV
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

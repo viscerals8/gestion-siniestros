@@ -1,0 +1,195 @@
+<!-- src/app/pages/gestion-usuarios/gestion-usuarios.page.html -->
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Panel de Administración</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Restricción de acceso -->
+  <ion-card *ngIf="!canAccess()" color="danger">
+    <ion-card-header>
+      <ion-card-title>Acceso Denegado</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Solo los usuarios con rol de <b>Administrador</b> tienen permiso para acceder a esta sección.
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Gestión de Usuarios -->
+  <div *ngIf="canAccess()">
+
+    <!-- Agregar Nuevo Usuario -->
+    <ion-card class="ion-margin-bottom">
+      <ion-card-header>
+        <ion-card-title>👥 Agregar Nuevo Usuario</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form (ngSubmit)="agregarUsuario()">
+
+          <ion-item>
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input
+              [(ngModel)]="nuevoUsuario.nombre"
+              name="nombre"
+              required
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Correo</ion-label>
+            <ion-input
+              type="email"
+              [(ngModel)]="nuevoUsuario.correo"
+              name="correo"
+              required
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input
+              type="password"
+              [(ngModel)]="nuevoUsuario.password"
+              name="password"
+              required
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Rol</ion-label>
+            <ion-select
+              [(ngModel)]="nuevoUsuario.rol_id"
+              name="rol_id"
+              required
+            >
+              <ion-select-option [value]="1">Administrador</ion-select-option>
+              <ion-select-option [value]="2">Editor</ion-select-option>
+              <ion-select-option [value]="3">Visualizador</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-toggle
+              [(ngModel)]="nuevoUsuario.activo"
+              name="activo"
+            >
+              Cuenta Activa
+            </ion-toggle>
+          </ion-item>
+
+          <ion-button
+            expand="block"
+            type="submit"
+            class="ion-margin-top"
+          >
+            Agregar Usuario
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Usuarios Registrados -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Usuarios Registrados</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <!-- Filtro ubicado sobre la tabla -->
+        <ion-item>
+          <ion-label>Filtrar</ion-label>
+          <ion-select
+            [(ngModel)]="filtroEstado"
+            (ionChange)="aplicarFiltro()"
+          >
+            <ion-select-option value="todos">Todos</ion-select-option>
+            <ion-select-option value="activos">Activos</ion-select-option>
+            <ion-select-option value="inactivos">Inactivos</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Tabla -->
+        <div class="tabla-scroll">
+          <table
+            class="registros-table"
+            *ngIf="usuariosFiltrados.length > 0"
+          >
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th *ngFor="let campo of camposUsuario">
+                  {{ campo.nombre === 'rol_id'
+                      ? 'Rol'
+                      : (campo.nombre | titlecase)
+                  }}
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let user of usuariosFiltrados">
+                <td>{{ user.id }}</td>
+
+                <td *ngFor="let campo of camposUsuario">
+                  <ng-container [ngSwitch]="campo.tipo">
+
+                    <!-- Campos de texto -->
+                    <input
+                      *ngSwitchCase="'input'"
+                      [type]="campo.nombre === 'correo' ? 'email' : 'text'"
+                      [(ngModel)]="$any(user)[campo.nombre]"
+                      (ngModelChange)="editarCampoUsuario(user.id, campo.nombre, $event)"
+                      [disabled]="!puedeEditar()"
+                    />
+
+                    <!-- Campos de password ocultos -->
+                    <span *ngSwitchCase="'password'">—</span>
+
+                    <!-- Campos select (rol) -->
+                    <select
+                      *ngSwitchCase="'select'"
+                      [(ngModel)]="$any(user)[campo.nombre]"
+                      (ngModelChange)="editarCampoUsuario(user.id, campo.nombre, $event)"
+                      [disabled]="!puedeEditar()"
+                    >
+                      <option
+                        *ngFor="let op of campo.opciones"
+                        [value]="op.value"
+                      >
+                        {{ op.label }}
+                      </option>
+                    </select>
+
+                    <!-- Campos toggle (activo/inactivo) -->
+                    <ion-toggle
+                      *ngSwitchCase="'toggle'"
+                      [(ngModel)]="$any(user)[campo.nombre]"
+                      (ionChange)="editarCampoUsuario(user.id, campo.nombre, $event.detail.checked)"
+                      [disabled]="!puedeEditar()"
+                    >
+                    </ion-toggle>
+
+                  </ng-container>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p *ngIf="usuariosFiltrados.length === 0">
+            No hay usuarios registrados.
+          </p>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+</ion-content>

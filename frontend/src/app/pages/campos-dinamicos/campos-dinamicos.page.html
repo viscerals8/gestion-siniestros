@@ -1,0 +1,188 @@
+<!-- src/app/pages/campos-dinamicos/campos-dinamicos.page.html -->
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Campos Dinámicos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Restricción de acceso -->
+  <ion-card *ngIf="!canAccess()" color="danger">
+    <ion-card-header>
+      <ion-card-title>Acceso Denegado</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Solo los usuarios con rol de <b>Administrador</b> tienen permiso para acceder a esta sección.
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Administración de Campos Dinámicos -->
+  <div *ngIf="canAccess()">
+
+    <!-- Agregar Nuevo Campo -->
+    <ion-card class="ion-margin-bottom">
+      <ion-card-header>
+        <ion-card-title>🆕 Agregar Campo Personalizado</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form (ngSubmit)="agregarCampo()">
+
+          <ion-item>
+            <ion-label position="floating">Nombre del campo</ion-label>
+            <ion-input
+              [(ngModel)]="nuevoCampo.name"
+              name="name"
+              required
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Tipo de dato</ion-label>
+            <ion-select [(ngModel)]="nuevoCampo.data_type" name="data_type" required>
+              <ion-select-option
+                *ngFor="let tipo of tiposDisponibles"
+                [value]="tipo.value"
+              >
+                {{ tipo.label }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-toggle [(ngModel)]="nuevoCampo.required" name="required">
+              Obligatorio
+            </ion-toggle>
+          </ion-item>
+
+          <ion-item>
+            <ion-toggle [(ngModel)]="nuevoCampo.active" name="active">
+              Activo
+            </ion-toggle>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Orden de aparición</ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="nuevoCampo.display_order"
+              name="display_order"
+            ></ion-input>
+          </ion-item>
+
+          <ion-button expand="block" type="submit" class="ion-margin-top">
+            Agregar Campo
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Campos Registrados -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Campos Registrados</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <ion-item>
+          <ion-label>Filtrar</ion-label>
+          <ion-select
+            [(ngModel)]="filtroEstado"
+            (ionChange)="aplicarFiltro()"
+          >
+            <ion-select-option value="todos">Todos</ion-select-option>
+            <ion-select-option value="activos">Activos</ion-select-option>
+            <ion-select-option value="inactivos">Inactivos</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <p *ngIf="cargando">Cargando campos...</p>
+
+        <div class="tabla-scroll" *ngIf="!cargando">
+          <table class="registros-table" *ngIf="camposFiltrados.length > 0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Obligatorio</th>
+                <th>Activo</th>
+                <th>Orden</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let campo of camposFiltrados">
+                <td>{{ campo.id }}</td>
+
+                <td>
+                  <input
+                    type="text"
+                    [ngModel]="campo.name"
+                    (change)="editarCampo(campo.id!, 'name', $any($event.target).value)"
+                  />
+                </td>
+
+                <td>
+                  <select
+                    [ngModel]="campo.data_type"
+                    (ngModelChange)="editarCampo(campo.id!, 'data_type', $event)"
+                  >
+                    <option *ngFor="let tipo of tiposDisponibles" [value]="tipo.value">
+                      {{ tipo.label }}
+                    </option>
+                  </select>
+                </td>
+
+                <td>
+                  <ion-toggle
+                    [ngModel]="campo.required"
+                    (ionChange)="editarCampo(campo.id!, 'required', $event.detail.checked)"
+                  ></ion-toggle>
+                </td>
+
+                <td>
+                  <ion-toggle
+                    [ngModel]="campo.active"
+                    (ionChange)="editarCampo(campo.id!, 'active', $event.detail.checked)"
+                  ></ion-toggle>
+                </td>
+
+                <td>
+                  <input
+                    type="number"
+                    [ngModel]="campo.display_order"
+                    (change)="editarCampo(campo.id!, 'display_order', +$any($event.target).value)"
+                  />
+                </td>
+
+                <td>
+                  <ion-button
+                    color="danger"
+                    size="small"
+                    (click)="eliminarCampo(campo)"
+                  >
+                    🗑️
+                  </ion-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p *ngIf="camposFiltrados.length === 0">
+            No hay campos dinámicos registrados.
+          </p>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+</ion-content>
