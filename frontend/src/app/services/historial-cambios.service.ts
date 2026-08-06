@@ -20,9 +20,9 @@ export interface HistorialEntry {
   fecha: string; // ISO string (datetime)
 }
 
-// ↳ Estructura del body enviado al backend (HistorialRequest)
+// ↳ Estructura del body enviado al backend (HistorialRequest). user_id lo agrega
+// el backend a partir del token de sesión, no se manda desde el cliente.
 export interface HistorialCreate {
-  user_id: number;
   accident_id: number;
   tipo_accion: string;
   seccion_afectada?: string;
