@@ -1,6 +1,9 @@
 export const environment = {
-  production: true
-  // Nota: a diferencia de environment.ts, este archivo no define apiBaseUrl ni
-  // dynamicsBaseUrl. Si se genera un build de producción, hay que completarlos
-  // con las URLs reales de ese entorno.
+  production: true,
+  // TODO: reemplazar por las URLs reales antes de desplegar a producción.
+  apiBaseUrl: 'https://REEMPLAZAR-CON-URL-DE-PRODUCCION/api',
+  dynamicsBaseUrl: 'http://190.4.222.148:1000',
+  features: {
+    externalImport: true
+  }
 };

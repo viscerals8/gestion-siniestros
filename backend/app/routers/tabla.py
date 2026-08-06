@@ -6,10 +6,12 @@ from pydantic import RootModel
 
 from ..services.tabla_service import TablaService
 from ..db.database import get_db
+from ..utils.security import get_current_user
 
 router = APIRouter(
     prefix="/registros",
-    tags=["Registros"]
+    tags=["Registros"],
+    dependencies=[Depends(get_current_user)],
 )
 
 # --------------------------------------------------------------------

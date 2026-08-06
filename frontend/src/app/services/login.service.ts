@@ -16,6 +16,10 @@ export interface UsuarioSesion {
   rol: 'Administrador' | 'Editor' | 'Visualizador' | string;
 }
 
+interface LoginResponse extends UsuarioSesion {
+  token: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class LoginService {
   private readonly base = '/login';
@@ -39,11 +43,12 @@ export class LoginService {
    * Devuelve true si autenticó; false si falló.
    */
   login(datos: UsuarioLogin): Observable<boolean> {
-    return this.api.post<UsuarioSesion>(`${this.base}/`, datos).pipe(
-      tap((user) => {
-        // Guarda usuario en memoria y en localStorage
+    return this.api.post<LoginResponse>(`${this.base}/`, datos).pipe(
+      tap(({ token, ...user }) => {
+        // Guarda usuario y token de sesión
         this.usuarioSesion = user;
         localStorage.setItem('usuarioSesion', JSON.stringify(user));
+        localStorage.setItem('token', token);
         this.usuarioSubject.next(user); // notifica cambio inmediato
 
         // Navegación según rol
@@ -75,6 +80,7 @@ export class LoginService {
   logout(): void {
     this.usuarioSesion = null;
     localStorage.removeItem('usuarioSesion');
+    localStorage.removeItem('token');
     this.usuarioSubject.next(null); // notifica logout inmediato
     this.router.navigate(['/login']);
   }

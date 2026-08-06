@@ -2,12 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..services.form_fields_service import FormFieldsService
 from ..db.database import get_db
+from ..utils.security import get_current_user, require_roles
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List
 
 router = APIRouter(
     prefix="/form-fields",
-    tags=["Campos Dinámicos"]
+    tags=["Campos Dinámicos"],
+    dependencies=[Depends(get_current_user)],
 )
 
 # Schemas de entrada (Uso de snake_case para contratos JSON frontend)
@@ -46,7 +48,8 @@ def get_fields(active: bool = False, db: Session = Depends(get_db)):
 def get_field(field_id: int, db: Session = Depends(get_db)):
     return FormFieldsService.get_field(db, field_id=field_id)
 
-@router.post("/", response_model=FormFieldResponse, response_model_by_alias=False)
+@router.post("/", response_model=FormFieldResponse, response_model_by_alias=False,
+             dependencies=[Depends(require_roles("Administrador"))])
 def crear_campo(datos: FormFieldRequest, db: Session = Depends(get_db)):
     return FormFieldsService.crear_campo(
         db,
@@ -57,7 +60,8 @@ def crear_campo(datos: FormFieldRequest, db: Session = Depends(get_db)):
         display_order=datos.display_order
     )
 
-@router.put("/{field_id}", response_model=FormFieldResponse, response_model_by_alias=False)
+@router.put("/{field_id}", response_model=FormFieldResponse, response_model_by_alias=False,
+            dependencies=[Depends(require_roles("Administrador"))])
 def editar_campo(field_id: int, datos: FormFieldUpdateRequest, db: Session = Depends(get_db)):
     return FormFieldsService.editar_campo(
         db,
@@ -69,6 +73,6 @@ def editar_campo(field_id: int, datos: FormFieldUpdateRequest, db: Session = Dep
         display_order=datos.display_order
     )
 
-@router.delete("/{field_id}")
+@router.delete("/{field_id}", dependencies=[Depends(require_roles("Administrador"))])
 def eliminar_campo(field_id: int, db: Session = Depends(get_db)):
     return FormFieldsService.eliminar_campo(db, field_id=field_id)

@@ -9,13 +9,15 @@ from pydantic import BaseModel, Field, ConfigDict
 
 from ..db.database import get_db
 from ..services.gestion_historial_service import GestionHistorialService
+from ..utils.security import get_current_user
 
 # ============================================================
 # Configuración del Router
 # ============================================================
 router = APIRouter(
     prefix="/historial",
-    tags=["Historial"]
+    tags=["Historial"],
+    dependencies=[Depends(get_current_user)],
 )
 
 # ============================================================

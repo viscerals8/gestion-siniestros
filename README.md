@@ -24,24 +24,26 @@ Este es un proyecto en desarrollo activo, no una pieza terminada. La siguiente t
 
 | Módulo | Estado | Notas |
 |---|---|---|
-| Login (backend) | ✅ Completo | Valida contraseña con bcrypt contra el hash guardado. Incluye un acceso de emergencia opcional (deshabilitado si no se configura `EMERGENCY_BYPASS_PASSWORD` en `.env`) — ver [Seguridad](#seguridad-y-limitaciones-conocidas). |
-| Autenticación por token (JWT) | 🟡 Sin conectar | Existen funciones para generar/validar JWT (`app/utils/security.py`) y el frontend ya lee un `token` de `localStorage` para mandarlo en cada request, pero el login **no genera ni devuelve ningún token** — la sesión hoy se resuelve guardando el usuario tal cual en `localStorage`, sin verificación de token en cada request. |
-| Gestión de usuarios (CRUD) | ✅ Completo | Alta, edición, listado. Solo accesible para rol Administrador. |
+| Login (backend) | ✅ Completo | Valida contraseña con bcrypt contra el hash guardado y devuelve un JWT. |
+| Autenticación por token (JWT) | ✅ Completo | El login devuelve un token firmado; todas las rutas protegidas lo exigen vía `Depends(get_current_user)` / `require_roles(...)` (`app/utils/security.py`). El frontend lo guarda en `localStorage` y lo manda en cada request. |
+| Gestión de usuarios (CRUD) | ✅ Completo | Alta, edición, listado. Solo accesible para rol Administrador (verificado también en el backend, no solo en el frontend). |
 | Registro de siniestros (alta/edición/baja) | ✅ Completo | Incluye wizard por pasos en el frontend. |
-| Historial de cambios / auditoría | ✅ Completo | Registro diferencial automático + filtros por usuario, campo y rango de fechas. |
-| Campos dinámicos (EAV) | ✅ Completo | Alta/baja de campos personalizados y su persistencia junto a los siniestros. |
+| Historial de cambios / auditoría | ✅ Completo | Registro diferencial automático + filtros por usuario, campo y rango de fechas. El historial de un siniestro ya no se borra en cascada al eliminarlo (bug corregido, ver commits). |
+| Campos dinámicos (EAV) | ✅ Completo | Alta/baja de campos personalizados y su persistencia junto a los siniestros. Lectura para cualquier rol autenticado, escritura solo Administrador. |
 | Importación desde Dynamics | 🟡 Parcial | El endpoint de importación existe y funciona; la validación de un proyecto contra Dynamics (`GET /validar_dynamics`) depende de un servicio externo cuya disponibilidad no está garantizada ni testeada acá. |
-| Roles y permisos en el frontend | ✅ Completo | `RoleGuard` restringe rutas según el rol guardado en sesión. |
-| Tests automatizados | ❌ Pendiente | No hay tests (unitarios, de integración ni e2e) en ninguno de los dos proyectos. |
-| CI/CD | ❌ Pendiente | No hay pipeline configurado. |
-| Build de producción documentado | 🟡 Parcial | `environment.prod.ts` existe pero no define `apiBaseUrl` ni `dynamicsBaseUrl`; hay que completarlo antes de generar un build real de producción. |
+| Roles y permisos | ✅ Completo | Verificados tanto en el frontend (`RoleGuard`, UX) como en el backend (`require_roles`, seguridad real). |
+| Tests automatizados | 🟡 Parcial | Backend: tests unitarios con pytest para los dos servicios con más lógica (`tabla_service`, `gestion_historial_service`), corriendo contra SQLite en memoria. Frontend: solo quedan los stubs `should create` que genera Angular CLI por defecto, sin cobertura real. |
+| CI/CD | 🟡 Parcial | GitHub Actions (`.github/workflows/ci.yml`) corre los tests del backend y el build de producción del frontend en cada push/PR a `main`. No corre lint (43 errores de estilo preexistentes, no relacionados con seguridad) ni los tests de Angular (requieren Chrome headless, no configurado). |
+| Build de producción documentado | ✅ Completo | `environment.prod.ts` tiene la misma forma que `environment.ts`; falta reemplazar la URL placeholder por la real antes de un deploy. `ng build --configuration production` corre limpio. |
 
 **Leyenda:** ✅ Completo · 🟡 En progreso / parcial · ❌ Pendiente
 
 ## Seguridad y limitaciones conocidas
 
-- El login tiene un mecanismo de acceso de emergencia (bypass) pensado para desarrollo: si se define `EMERGENCY_BYPASS_PASSWORD` en el `.env`, esa contraseña otorga acceso como Administrador a cualquier cuenta existente sin validar su contraseña real. **Si no se define esa variable, el mecanismo queda completamente deshabilitado.** No debería usarse en un entorno expuesto públicamente.
-- No hay autenticación por token verificada en cada request (ver tabla de estado). El control de acceso actual depende de lo que el frontend guarda en `localStorage`, no de una verificación server-side por request.
+- El login ya no tiene ningún mecanismo de bypass: la única forma de autenticarse es con la contraseña real verificada contra el hash bcrypt.
+- Todas las rutas de la API (excepto `POST /login/`) exigen un JWT válido en el header `Authorization: Bearer <token>`, verificado server-side en cada request — no solo del lado del frontend.
+- `TablaService` sigue recibiendo el `user_id` para el log de auditoría vía el header `X-User-Id` que manda el frontend, en vez de derivarlo del token verificado. Es consistente con el resto del sistema (todo pasa por el mismo login), pero lo ideal a futuro sería tomar ese `user_id` directamente del JWT en vez de confiar en un header que el cliente arma.
+- Se sacó el `cascade="all, delete-orphan"` de la relación `Accident.log` para que el historial sobreviva al borrado de un siniestro. Esto se verificó contra SQLite (sin foreign keys estrictas). **No se pudo verificar contra el esquema real de SQL Server en producción** — si esa base tiene la foreign key configurada en modo estricto (sin `ON DELETE CASCADE`/`SET NULL`), borrar un siniestro con historial existente podría fallar por violación de integridad referencial en vez de simplemente conservar el log. Conviene revisarlo contra la base real antes de confiar en este comportamiento.
 - CORS está configurado para aceptar cualquier origen (`allow_origins=["*"]`) — pensado para desarrollo, hay que restringirlo antes de exponer el backend fuera de una red controlada.
 
 ## Stack técnico
@@ -84,6 +86,13 @@ uvicorn app.main:app --reload
 ```
 
 La API queda disponible en `http://127.0.0.1:8000`, con documentación interactiva en `http://127.0.0.1:8000/docs`.
+
+Para correr los tests (no requieren conexión a SQL Server, usan SQLite en memoria):
+
+```bash
+pip install -r requirements-dev.txt
+pytest -v
+```
 
 ### Frontend
 

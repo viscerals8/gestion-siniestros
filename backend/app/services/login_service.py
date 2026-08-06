@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from passlib.hash import bcrypt  # importa passlib para bcrypt
 from ..models.base import User, Rol
-from ..core.config import settings
+from ..utils.security import create_access_token
 
 
 class LoginService:
@@ -18,28 +18,24 @@ class LoginService:
             if not user:
                 raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-            # Acceso de emergencia opcional: solo activo si EMERGENCY_BYPASS_PASSWORD
-            # está definido en el entorno. Si no está configurado, esta rama nunca se cumple.
-            bypass_password = settings.EMERGENCY_BYPASS_PASSWORD
-            is_bypass = bool(bypass_password) and password == bypass_password
-
-            if not is_bypass:
-                if not bcrypt.verify(password, user.PasswordHash or ""):
-                    raise HTTPException(status_code=401, detail="Credenciales inválidas")
+            if not bcrypt.verify(password, user.PasswordHash or ""):
+                raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
             rol = db.execute(
                 select(Rol).where(Rol.RolID == user.RolID)
             ).scalars().first()
             rol_nombre = rol.NombreRol if rol else "Sin Rol"
 
-            # El acceso de emergencia entra siempre con permisos de Administrador
-            rol_final = "Administrador" if is_bypass else rol_nombre
+            token = create_access_token(
+                data={"sub": str(user.UserID), "correo": user.Correo, "rol": rol_nombre}
+            )
 
             return {
                 "id": user.UserID,
                 "nombre": user.Nombre,
                 "correo": user.Correo,
-                "rol": rol_final
+                "rol": rol_nombre,
+                "token": token,
             }
 
         except HTTPException:

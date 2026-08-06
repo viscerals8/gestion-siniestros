@@ -132,7 +132,9 @@ class Accident(Base):
     category3: Mapped["AccidentCategory"] = relationship(foreign_keys=[CategoryID3], back_populates="accidents_cat3")
 
     multas: Mapped[List["Multa"]] = relationship(back_populates="accident", cascade="all, delete-orphan")
-    log: Mapped[List["AccidentLog"]] = relationship(back_populates="accident", cascade="all, delete-orphan")
+    # Sin cascade delete-orphan y con passive_deletes: el historial de auditoría debe
+    # sobrevivir al borrado del accidente, sin que SQLAlchemy intente anular su AccidentID.
+    log: Mapped[List["AccidentLog"]] = relationship(back_populates="accident", passive_deletes=True)
 
     # === CONEXIÓN CON CAMPOS DINÁMICOS ===
     custom_field_values: Mapped[List["AccidentFieldValue"]] = relationship(back_populates="accident", cascade="all, delete-orphan")
