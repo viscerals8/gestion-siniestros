@@ -1,0 +1,141 @@
+// For information on how to create your own theme, please see:
+// http://ionicframework.com/docs/theming/
+
+/*
+ * Paleta "Gestión de Datos"
+ * Indigo como color de marca, con acentos fríos (cielo/violeta) y
+ * neutros en gris pizarra. Pensada para verse sobria y profesional
+ * tanto en modo claro como oscuro.
+ */
+
+:root {
+  /** primary — Indigo **/
+  --ion-color-primary: #4f46e5;
+  --ion-color-primary-rgb: 79, 70, 229;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #463ecb;
+  --ion-color-primary-tint: #6259e9;
+
+  /** secondary — Cielo **/
+  --ion-color-secondary: #0ea5e9;
+  --ion-color-secondary-rgb: 14, 165, 233;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #0c91cd;
+  --ion-color-secondary-tint: #26aeeb;
+
+  /** tertiary — Violeta **/
+  --ion-color-tertiary: #7c3aed;
+  --ion-color-tertiary-rgb: 124, 58, 237;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #6d33d1;
+  --ion-color-tertiary-tint: #894eef;
+
+  /** success **/
+  --ion-color-success: #16a34a;
+  --ion-color-success-rgb: 22, 163, 74;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #138f41;
+  --ion-color-success-tint: #2dac5c;
+
+  /** warning **/
+  --ion-color-warning: #f59e0b;
+  --ion-color-warning-rgb: 245, 158, 11;
+  --ion-color-warning-contrast: #1f2937;
+  --ion-color-warning-contrast-rgb: 31, 41, 55;
+  --ion-color-warning-shade: #d88b0a;
+  --ion-color-warning-tint: #f6a823;
+
+  /** danger **/
+  --ion-color-danger: #dc2626;
+  --ion-color-danger-rgb: 220, 38, 38;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #c22121;
+  --ion-color-danger-tint: #e03b3b;
+
+  /** dark — Pizarra oscura **/
+  --ion-color-dark: #1e293b;
+  --ion-color-dark-rgb: 30, 41, 59;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #1a2433;
+  --ion-color-dark-tint: #344050;
+
+  /** medium — Pizarra media **/
+  --ion-color-medium: #64748b;
+  --ion-color-medium-rgb: 100, 116, 139;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #58677a;
+  --ion-color-medium-tint: #748297;
+
+  /** light **/
+  --ion-color-light: #f8fafc;
+  --ion-color-light-rgb: 248, 250, 252;
+  --ion-color-light-contrast: #1f2937;
+  --ion-color-light-contrast-rgb: 31, 41, 55;
+  --ion-color-light-shade: #dadce0;
+  --ion-color-light-tint: #f9fbfd;
+
+  /** Fondo y texto base de la app **/
+  --ion-background-color: #f4f6f8;
+  --ion-background-color-rgb: 244, 246, 248;
+  --ion-text-color: #1f2937;
+  --ion-text-color-rgb: 31, 41, 55;
+
+  --ion-toolbar-background: var(--ion-color-primary);
+  --ion-toolbar-color: var(--ion-color-primary-contrast);
+
+  --ion-item-background: #ffffff;
+  --ion-card-background: #ffffff;
+
+  /** Tokens propios reutilizables en los estilos de página **/
+  --app-radius: 12px;
+  --app-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-color-primary: #6366f1;
+    --ion-color-primary-rgb: 99, 102, 241;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #575adb;
+    --ion-color-primary-tint: #7376f2;
+
+    --ion-color-secondary: #38bdf8;
+    --ion-color-secondary-rgb: 56, 189, 248;
+    --ion-color-secondary-contrast: #0b1220;
+    --ion-color-secondary-contrast-rgb: 11, 18, 32;
+    --ion-color-secondary-shade: #31a6da;
+    --ion-color-secondary-tint: #4cc4f9;
+
+    --ion-color-dark: #e5e7eb;
+    --ion-color-dark-rgb: 229, 231, 235;
+    --ion-color-dark-contrast: #111827;
+    --ion-color-dark-contrast-rgb: 17, 24, 39;
+    --ion-color-dark-shade: #cacccf;
+    --ion-color-dark-tint: #e8eaed;
+
+    --ion-color-medium: #94a3b8;
+    --ion-color-medium-rgb: 148, 163, 184;
+    --ion-color-medium-contrast: #0b1220;
+    --ion-color-medium-contrast-rgb: 11, 18, 32;
+    --ion-color-medium-shade: #828fa2;
+    --ion-color-medium-tint: #9eacbf;
+
+    --ion-background-color: #0f172a;
+    --ion-background-color-rgb: 15, 23, 42;
+    --ion-text-color: #e5e7eb;
+    --ion-text-color-rgb: 229, 231, 235;
+
+    --ion-item-background: #1e293b;
+    --ion-card-background: #1e293b;
+
+    --app-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  }
+}

@@ -1,0 +1,34 @@
+<ion-list *ngIf="usuario" lines="none">
+  <ion-item button (click)="irTabla()">
+    <ion-icon slot="start" name="document-text-outline" color="tertiary"></ion-icon>
+    <ion-label>Gestión de Registros</ion-label>
+  </ion-item>
+
+  <ion-item button (click)="irHistorialCambios()">
+    <ion-icon slot="start" name="time-outline" color="medium"></ion-icon>
+    <ion-label>Historial de Cambios</ion-label>
+  </ion-item>
+
+  <ion-item
+    *ngIf="rolUsuarioLogueado === 'Administrador'"
+    button
+    (click)="irGestionUsuarios()"
+  >
+    <ion-icon slot="start" name="people-outline" color="primary"></ion-icon>
+    <ion-label>Gestión de Usuarios</ion-label>
+  </ion-item>
+
+  <ion-item
+    *ngIf="rolUsuarioLogueado === 'Administrador'"
+    button
+    (click)="irCamposDinamicos()"
+  >
+    <ion-icon slot="start" name="options-outline" color="dark"></ion-icon>
+    <ion-label>Campos Dinámicos</ion-label>
+  </ion-item>
+
+  <ion-item button (click)="cerrarSesion()">
+    <ion-icon slot="start" name="log-out-outline" color="danger"></ion-icon>
+    <ion-label>Cerrar Sesión</ion-label>
+  </ion-item>
+</ion-list>

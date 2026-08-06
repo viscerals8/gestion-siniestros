@@ -1,0 +1,650 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Gestión de Registros</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="tabla-content">
+  <ion-button
+    expand="full"
+    color="primary"
+    (click)="toggleFormularioNuevo()"
+    *ngIf="puedeEditar()"
+  >
+    {{ mostrandoFormularioNuevo ? 'Cerrar formulario' : 'Agregar nuevo' }}
+  </ion-button>
+
+  <ion-item>
+    <ion-label>Filtrar por:</ion-label>
+    <ion-select
+      [(ngModel)]="filtroFecha"
+      (ionChange)="cargarRegistros(filtroFecha === 'ultimoMes')"
+    >
+      <ion-select-option value="ultimoMes">Último mes</ion-select-option>
+      <ion-select-option value="todos">Todos</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-searchbar
+    placeholder="Buscar por Nº JUSTTIME, Empresa, Estado..."
+    [(ngModel)]="busqueda"
+    (ionInput)="filtrarRegistros()"
+  >
+  </ion-searchbar>
+
+  <div
+    class="formulario"
+    *ngIf="mostrandoFormularioNuevo && puedeEditar()"
+  >
+    <div class="wizard-header">
+      <div class="wizard-progress-track">
+        <div class="wizard-progress-fill" [style.width.%]="progresoPct"></div>
+      </div>
+
+      <div class="wizard-steps">
+        <button
+          type="button"
+          class="wizard-step"
+          *ngFor="let paso of pasosVisibles"
+          [class.activo]="paso.id === pasoActual"
+          [class.completado]="paso.id < pasoActual"
+          (click)="irPaso(paso.id)"
+        >
+          <span class="wizard-step-num">{{ paso.id < pasoActual ? '✓' : paso.id }}</span>
+          <span class="wizard-step-label">{{ paso.label }}</span>
+        </button>
+      </div>
+
+      <div class="wizard-step-caption">
+        Paso {{ pasoActual }} de {{ totalPasosEfectivo }}
+      </div>
+    </div>
+
+    <form (keydown.enter)="$event.preventDefault()">
+
+      <div class="paso-contenido" *ngIf="pasoActual === 1">
+
+      <ion-item>
+        <ion-label position="stacked">Nº JUSTTIME (Expediente)</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.JusttimeNumber"
+          name="JusttimeNumber"
+          (keyup.enter)="buscarContrato()"
+          (ionBlur)="buscarContrato()"
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Fecha Inicio</ion-label>
+        <ion-datetime
+          display-format="YYYY-MM-DD"
+          [(ngModel)]="registroNuevo.InitialDate"
+          name="InitialDate"
+        ></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Año</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.Year"
+          name="Year"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">País</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Country"
+          name="Country"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">ID Entidad</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.IDEntidad"
+          name="IDEntidad"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Demandante</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Demandant"
+          name="Demandant"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Demandado</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Defendant"
+          name="Defendant"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Empresa (Dynamics)</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Company"
+          name="Company"
+          readonly
+        ></ion-input>
+      </ion-item>
+
+      </div>
+
+      <div class="paso-contenido" *ngIf="pasoActual === 2">
+
+      <ion-item>
+        <ion-label position="stacked">Dimensiones</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Dimensions"
+          name="Dimensions"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Contrato</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Contrato"
+          name="Contrato"
+          readonly
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Instalación</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Instalacion"
+          name="Instalacion"
+          readonly
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Supervisor</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Supervisor"
+          name="Supervisor"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">JOP</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.JOP"
+          name="JOP"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Delegado Zonal</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.ZonalDelegate"
+          name="ZonalDelegate"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Zona (Dynamics)</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Zone"
+          name="Zone"
+          readonly
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Tipo</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Type"
+          name="Type"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">
+          Producto / Línea de Actividad (Dynamics)
+        </ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Activity"
+          name="Activity"
+          readonly
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Clave Dotación Contable</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.AccountingKey"
+          name="AccountingKey"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Estado (Been Processing)</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.BeenProcessing"
+          name="BeenProcessing"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Materia</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Materia"
+          name="Materia"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Motivo</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Motivo"
+          name="Motivo"
+        ></ion-input>
+      </ion-item>
+
+      </div>
+
+      <div class="paso-contenido" *ngIf="pasoActual === 3">
+
+      <ion-item>
+        <ion-label position="stacked">Importe Total Reclamado</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.ClaimedAmount"
+          name="ClaimedAmount"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Importe Real Estimado RRHH</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.EstimatedAmount"
+          name="EstimatedAmount"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Provisión Anterior</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.PreviousProvision"
+          name="PreviousProvision"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Número Demanda Adicional</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.AdditionalDemand"
+          name="AdditionalDemand"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Importe Adicional No Provisionado</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.NonProvisionedAmount"
+          name="NonProvisionedAmount"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Reversa de Importe Provisionado</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.ReversalAmount"
+          name="ReversalAmount"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Importe al Cierre</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.FinalCost"
+          name="FinalCost"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Coste Letrado Real al Cierre</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.FinalAttorneyCost"
+          name="FinalAttorneyCost"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Otros Gastos</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.OtherExpenses"
+          name="OtherExpenses"
+        ></ion-input>
+      </ion-item>
+
+      </div>
+
+      <div class="paso-contenido" *ngIf="pasoActual === 4">
+
+      <ion-item>
+        <ion-label position="stacked">Fecha de Cierre</ion-label>
+        <ion-datetime
+          display-format="YYYY-MM-DD"
+          [(ngModel)]="registroNuevo.CloseDate"
+          name="CloseDate"
+        ></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Nº de Multa</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.PenaltyNumber"
+          name="PenaltyNumber"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Comentario Cierre Causa</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.CloseComment"
+          name="CloseComment"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Primera Estimación Contable</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.FirstAccountingEstimate"
+          name="FirstAccountingEstimate"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Segunda Estimación Contable</ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="registroNuevo.SecondAccountingEstimate"
+          name="SecondAccountingEstimate"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Categoría 1</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Category1"
+          name="Category1"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Categoría 2</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Category2"
+          name="Category2"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Categoría 3</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Category3"
+          name="Category3"
+        ></ion-input>
+      </ion-item>
+
+      </div>
+
+      <div class="paso-contenido" *ngIf="pasoActual === 5">
+
+      <ion-item>
+        <ion-label position="stacked">Gestión (Dynamics)</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Management"
+          name="Management"
+          readonly
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Modificación</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Modification"
+          name="Modification"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Categoría</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Categoria"
+          name="Categoria"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Fecha de Fiscalización</ion-label>
+        <ion-datetime
+          display-format="YYYY-MM-DD"
+          [(ngModel)]="registroNuevo.InspectionDate"
+          name="InspectionDate"
+        ></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Periodo Fiscalizado</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.PeriodoFiscalizado"
+          name="PeriodoFiscalizado"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Área / Departamento Responsable</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Department"
+          name="Department"
+          readonly
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Responsable (Dynamics)</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Responsible"
+          name="Responsible"
+          readonly
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Acción / Medida Disciplinaria Aplicada</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.AppliedMeasure"
+          name="AppliedMeasure"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Estado</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Estado"
+          name="Estado"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Dimensiones (Final)</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.DimensionesFinal"
+          name="DimensionesFinal"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Comentarios</ion-label>
+        <ion-input
+          [(ngModel)]="registroNuevo.Comentarios"
+          name="Comentarios"
+        ></ion-input>
+      </ion-item>
+
+      </div>
+
+      <div class="paso-contenido" *ngIf="pasoActual === 6 && camposDinamicos.length > 0">
+
+      <div class="custom-fields-section">
+        <div *ngFor="let campo of camposDinamicos">
+          <ion-item *ngIf="campo.data_type === 'string'">
+            <ion-label position="stacked">
+              {{ campo.name }} <span *ngIf="campo.required" style="color: red;">*</span>
+            </ion-label>
+            <ion-input
+              [(ngModel)]="valoresDinamicos[campo.name]"
+              [name]="'dyn_' + campo.name"
+              [required]="campo.required"
+              placeholder="Ingrese texto..."
+            ></ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="campo.data_type === 'number'">
+            <ion-label position="stacked">
+              {{ campo.name }} <span *ngIf="campo.required" style="color: red;">*</span>
+            </ion-label>
+            <ion-input
+              type="number"
+              [(ngModel)]="valoresDinamicos[campo.name]"
+              [name]="'dyn_' + campo.name"
+              [required]="campo.required"
+              placeholder="0"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="campo.data_type === 'boolean'">
+            <ion-checkbox
+              [(ngModel)]="valoresDinamicos[campo.name]"
+              [name]="'dyn_' + campo.name"
+              justify="space-between"
+            >
+              {{ campo.name }}
+            </ion-checkbox>
+          </ion-item>
+        </div>
+      </div>
+
+      </div>
+
+    </form>
+  </div>
+
+  <ion-button
+    expand="block"
+    color="success"
+    (click)="exportarExcel()"
+  >
+    📊 Exportar a Excel
+  </ion-button>
+
+  <div
+    class="tabla-scroll"
+    *ngIf="registrosFiltrados && registrosFiltrados.length > 0"
+  >
+    <table class="registros-table">
+      <thead>
+        <tr>
+          <th
+            *ngFor="let key of objectKeys(registrosFiltrados[0] || {})"
+            [class.ion-hide]="key === 'custom_fields'"
+          >
+            {{ key }}
+          </th>
+          <th *ngFor="let campo of camposDinamicos">{{ campo.name }}</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let registro of registrosFiltrados">
+          <td
+            *ngFor="let key of objectKeys(registrosFiltrados[0] || {})"
+            [class.ion-hide]="key === 'custom_fields'"
+          >
+            {{ registro[key] }}
+          </td>
+          <td *ngFor="let campo of camposDinamicos">
+            {{ registro.custom_fields?.[campo.name] }}
+          </td>
+          <td class="acciones-cell">
+            <ion-button
+              size="small"
+              color="warning"
+              (click)="editarRegistro(registro.AccidentID)"
+              [disabled]="!puedeEditar()"
+            >
+              Editar
+            </ion-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div
+    *ngIf="registrosFiltrados.length === 0"
+    class="sin-registros"
+  >
+    <p>No hay registros disponibles.</p>
+  </div>
+
+</ion-content>
+
+<ion-footer *ngIf="mostrandoFormularioNuevo && puedeEditar()">
+  <ion-toolbar>
+    <div class="wizard-nav">
+      <ion-button
+        *ngIf="pasoActual > 1"
+        fill="outline"
+        color="medium"
+        (click)="pasoAnterior()"
+      >
+        ← Atrás
+      </ion-button>
+
+      <ion-button
+        fill="clear"
+        color="danger"
+        (click)="cancelarEdicion()"
+      >
+        Cancelar
+      </ion-button>
+
+      <ion-button
+        *ngIf="!esUltimoPaso"
+        color="primary"
+        (click)="pasoSiguiente()"
+      >
+        Siguiente →
+      </ion-button>
+
+      <ion-button
+        *ngIf="esUltimoPaso"
+        color="success"
+        (click)="guardarRegistro()"
+      >
+        ✔ Guardar
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

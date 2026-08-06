@@ -1,0 +1,303 @@
+/* 🌟 Espaciado general */
+ion-content {
+  padding: 1rem;
+  background: var(--ion-background-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 🔹 Botones principales */
+ion-button {
+  margin: 0.5rem 0;
+  border-radius: var(--app-radius, 10px);
+  font-weight: 600;
+}
+
+/* 🧾 Formulario elegante */
+.formulario {
+  background: var(--ion-card-background);
+  padding: 1.5rem;
+  border-radius: var(--app-radius, 12px);
+  box-shadow: var(--app-shadow, 0 6px 15px rgba(0, 0, 0, 0.05));
+  margin: 1rem auto 0;
+  max-width: 880px;
+}
+
+/* Etiquetas apiladas: alto automático y separación clara respecto al input,
+   para que un texto largo que hace wrap a 2 líneas no quede tapado por la caja. */
+ion-item {
+  --min-height: auto;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+ion-label[position="stacked"] {
+  position: static !important;
+  transform: none !important;
+  white-space: normal !important;
+  margin: 0 0 0.4rem 0 !important;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4b5563;
+  line-height: 1.3;
+}
+
+/* 🪜 Wizard: encabezado con progreso y pasos */
+.wizard-header {
+  margin-bottom: 1.5rem;
+}
+
+.wizard-progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.wizard-progress-fill {
+  height: 100%;
+  background: var(--ion-color-primary);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.wizard-steps {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 0.5rem;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.wizard-step {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.wizard-step:hover {
+  border-color: var(--ion-color-primary);
+}
+
+.wizard-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: #e5e7eb;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.wizard-step.activo {
+  background: var(--ion-color-primary);
+  border-color: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+}
+
+.wizard-step.activo .wizard-step-num {
+  background: rgba(255, 255, 255, 0.25);
+  color: var(--ion-color-primary-contrast);
+}
+
+.wizard-step.completado {
+  border-color: var(--ion-color-success);
+  color: var(--ion-color-success-shade);
+}
+
+.wizard-step.completado .wizard-step-num {
+  background: var(--ion-color-success);
+  color: var(--ion-color-success-contrast);
+}
+
+.wizard-step-caption {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-align: right;
+}
+
+/* 🪜 Contenido de cada paso: mantiene el grid original de 2 columnas */
+.paso-contenido {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  animation: paso-fade-in 0.25s ease;
+}
+
+@keyframes paso-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.custom-fields-section {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+/* 🧭 Barra de navegación fija del wizard (footer) */
+ion-footer .wizard-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+ion-footer ion-button {
+  margin: 0;
+}
+
+ion-item {
+  width: 100%;
+}
+
+ion-input, ion-select, ion-datetime {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  font-size: 0.95rem;
+  padding: 0.5rem;
+}
+
+ion-input:focus, ion-select:focus, ion-datetime:focus {
+  border-color: var(--ion-color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.2);
+}
+
+/* 🧩 Tabla de registros */
+.tabla-scroll {
+  overflow-x: auto;
+  margin-top: 2rem;
+}
+
+.registros-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: var(--ion-card-background);
+  border-radius: var(--app-radius, 10px);
+  overflow: hidden;
+  box-shadow: var(--app-shadow, 0 4px 12px rgba(0,0,0,0.05));
+}
+
+.registros-table th, .registros-table td {
+  padding: 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.registros-table th {
+  background: #f1f5f9;
+  font-weight: 600;
+}
+
+.registros-table tbody tr:hover {
+  background: #f3f4f6;
+}
+
+.acciones-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 🔎 Searchbar y select full width */
+ion-searchbar, ion-select {
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+/* 🔹 Mensaje sin registros */
+.sin-registros {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .paso-contenido,
+  .custom-fields-section {
+    grid-template-columns: 1fr;
+  }
+
+  .wizard-step-label {
+    display: none;
+  }
+}
+
+/* 🌙 Modo oscuro — la mayoría de colores ya se adaptan solos vía variables
+   de :root (var(--ion-*)); aquí solo quedan los neutros propios de esta página. */
+@media (prefers-color-scheme: dark) {
+  ion-label[position="stacked"] {
+    color: #cbd5e1;
+  }
+
+  ion-input, ion-select, ion-datetime {
+    background: #1e293b;
+    border-color: #374151;
+    color: var(--ion-text-color);
+  }
+
+  .registros-table th {
+    background: #111827;
+  }
+
+  .registros-table tbody tr:hover {
+    background: #273449;
+  }
+
+  .sin-registros {
+    color: #9ca3af;
+  }
+
+  .wizard-progress-track {
+    background: #374151;
+  }
+
+  .wizard-step {
+    background: #1e293b;
+    border-color: #374151;
+    color: var(--ion-text-color);
+  }
+
+  .wizard-step-num {
+    background: #374151;
+  }
+
+  .wizard-step-caption {
+    color: #9ca3af;
+  }
+
+  ion-footer ion-toolbar {
+    --background: var(--ion-card-background);
+    --color: var(--ion-text-color);
+  }
+}

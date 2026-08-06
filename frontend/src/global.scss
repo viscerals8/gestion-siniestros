@@ -1,0 +1,97 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import '@ionic/angular/css/palettes/dark.system.css';
+
+/* ============================================================
+   ✨ Look & feel global — tipografía, tarjetas, botones
+   ============================================================ */
+
+:root {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+ion-title {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Tarjetas con esquinas suaves, sombra ligera y transición al hover */
+ion-card {
+  border-radius: var(--app-radius, 12px);
+  box-shadow: var(--app-shadow, 0 6px 16px rgba(15, 23, 42, 0.08));
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Botones con esquinas suaves y sin GRITAR en mayúsculas */
+ion-button {
+  --border-radius: 10px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.2px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+ion-button:not([disabled]):hover {
+  transform: translateY(-1px);
+}
+
+ion-button:not([disabled]):active {
+  transform: translateY(0);
+  opacity: 0.9;
+}
+
+/* Items de formulario con esquinas suaves */
+ion-item {
+  --border-radius: 10px;
+  --highlight-color-focused: var(--ion-color-primary);
+}
+
+/* Scrollbars sutiles y consistentes en toda la app (WebKit) */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ion-color-medium-tint, #94a3b8);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ion-color-medium, #64748b);
+}

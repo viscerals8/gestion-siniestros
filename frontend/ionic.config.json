@@ -1,0 +1,7 @@
+{
+  "name": "gestion-datos",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
