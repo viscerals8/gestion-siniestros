@@ -24,8 +24,7 @@ router = APIRouter(
 # Schemas (Request / Response)
 # ============================================================
 class HistorialRequest(BaseModel):
-    """Estructura del body al crear un registro de historial."""
-    user_id: int
+    """Estructura del body al crear un registro de historial (user_id se toma del token, no del body)."""
     accident_id: int
     tipo_accion: str
     seccion_afectada: Optional[str] = None
@@ -66,7 +65,11 @@ def get_historial(db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=HistorialResponse, status_code=201)
-def agregar_historial(entry: HistorialRequest, db: Session = Depends(get_db)):
+def agregar_historial(
+    entry: HistorialRequest,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
     """
     Crea un nuevo registro de historial.
     Se valida que existan los IDs de usuario y accidente antes de insertar.
@@ -74,7 +77,7 @@ def agregar_historial(entry: HistorialRequest, db: Session = Depends(get_db)):
     try:
         nuevo_log = GestionHistorialService.agregar_historial(
             db=db,
-            user_id=entry.user_id,
+            user_id=int(current_user["sub"]),
             accident_id=entry.accident_id,
             tipo_accion=entry.tipo_accion,
             seccion_afectada=entry.seccion_afectada,
