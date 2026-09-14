@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -8,9 +8,9 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class DynamicsService {
-  private readonly dynamicsBaseUrl = environment.dynamicsBaseUrl;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private readonly dynamicsBaseUrl = environment.dynamicsBaseUrl;
 
   /**
    * Obtiene datos de contrato desde Dynamics por ID

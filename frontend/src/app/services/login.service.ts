@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
@@ -22,6 +22,9 @@ interface LoginResponse extends UsuarioSesion {
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
+  private router = inject(Router);
+  private api = inject(ApiService);
+
   private readonly base = '/login';
   private usuarioSesion: UsuarioSesion | null = null;
 
@@ -29,7 +32,7 @@ export class LoginService {
   private usuarioSubject = new BehaviorSubject<UsuarioSesion | null>(null);
   public usuario$ = this.usuarioSubject.asObservable();
 
-  constructor(private router: Router, private api: ApiService) {
+  constructor() {
     // Restaurar sesión si hay algo guardado en localStorage
     const guardado = localStorage.getItem('usuarioSesion');
     if (guardado) {

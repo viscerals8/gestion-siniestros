@@ -5,7 +5,7 @@
 // Fecha: 2025-10-16 (versión estable y corregida)
 // ===============================================================
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -75,11 +75,11 @@ export interface Registro {
 // ===============================================================
 @Injectable({ providedIn: 'root' })
 export class TablaService {
+  private api = inject(ApiService);
+
   private readonly base = '/registros';
   private registrosSubject = new BehaviorSubject<Registro[]>([]);
   public registros$ = this.registrosSubject.asObservable();
-
-  constructor(private api: ApiService) {}
 
   // ===============================================================
   // GET → obtiene todos los registros

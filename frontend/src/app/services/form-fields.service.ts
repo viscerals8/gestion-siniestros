@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -32,10 +32,10 @@ export interface FormFieldUpdate {
   providedIn: 'root'
 })
 export class FormFieldsService {
+  private api = inject(ApiService);
+
   // Tu router usa prefix="/form-fields" y la colección está en "/"
   private readonly base = '/form-fields';
-
-  constructor(private api: ApiService) {}
 
   /**
    * Obtiene los campos dinámicos desde el backend.

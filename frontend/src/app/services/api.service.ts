@@ -5,7 +5,7 @@
 // Fecha: 2025-10-16
 // ===============================================================
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpClient,
   HttpErrorResponse,
@@ -18,9 +18,9 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private readonly base = environment.apiBaseUrl;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private readonly base = environment.apiBaseUrl;
 
   // ===============================================================
   // GET

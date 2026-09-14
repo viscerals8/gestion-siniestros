@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -60,6 +60,10 @@ import { NotificationService } from '../../services/notification.service';
   ],
 })
 export class HistorialCambiosPage implements OnInit, OnDestroy {
+  private loginService = inject(LoginService);
+  private historialService = inject(HistorialCambiosService);
+  private notification = inject(NotificationService);
+
   // ============================================================
   // Variables base
   // ============================================================
@@ -82,15 +86,6 @@ export class HistorialCambiosPage implements OnInit, OnDestroy {
   camposDisponibles: string[] = [];
 
   cargando: boolean = false;
-
-  // ============================================================
-  // Constructor
-  // ============================================================
-  constructor(
-    private loginService: LoginService,
-    private historialService: HistorialCambiosService,
-    private notification: NotificationService
-  ) {}
 
   // ============================================================
   // Ciclo de vida

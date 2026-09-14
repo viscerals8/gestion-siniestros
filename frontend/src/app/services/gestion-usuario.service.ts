@@ -1,5 +1,5 @@
 // src/app/services/gestion-usuarios.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -32,10 +32,10 @@ export interface UsuarioUpdate {
 
 @Injectable({ providedIn: 'root' })
 export class GestionUsuariosService {
+  private api = inject(ApiService);
+
   // Tu router usa prefix="/usuarios" y la colección está en "/"
   private readonly base = '/usuarios';
-
-  constructor(private api: ApiService) {}
 
   // GET /usuarios/
   getUsuarios(): Observable<Usuario[]> {
