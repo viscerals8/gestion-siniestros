@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -8,7 +8,6 @@ import {
   IonInput,
   IonButton
 } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
 import { LoginService, UsuarioLogin } from '../../services/login.service';
 import { NotificationService } from '../../services/notification.service';
 
@@ -27,18 +26,13 @@ import { NotificationService } from '../../services/notification.service';
     IonButton,
   ],
 })
-export class LoginPage implements OnInit {
+export class LoginPage {
+  private loginService = inject(LoginService);
+  private notification = inject(NotificationService);
+
   email = '';
   password = '';
   loading = false;
-
-  constructor(
-    private router: Router,
-    private loginService: LoginService,
-    private notification: NotificationService
-  ) {}
-
-  ngOnInit() {}
 
   login() {
     if (!this.email || !this.password) {

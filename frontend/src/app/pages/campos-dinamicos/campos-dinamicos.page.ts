@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -67,6 +67,10 @@ const TIPOS_SOPORTADOS: Array<{ label: string; value: string }> = [
   ],
 })
 export class CamposDinamicosPage implements OnInit, OnDestroy {
+  private formFieldsService = inject(FormFieldsService);
+  private loginService = inject(LoginService);
+  private notification = inject(NotificationService);
+
   rolUsuarioLogueado: 'Administrador' | 'Editor' | 'Visualizador' | string = '';
   usuarioActual: UsuarioSesion | null = null;
   private subUsuario!: Subscription;
@@ -84,12 +88,6 @@ export class CamposDinamicosPage implements OnInit, OnDestroy {
     active: true,
     display_order: 0,
   };
-
-  constructor(
-    private formFieldsService: FormFieldsService,
-    private loginService: LoginService,
-    private notification: NotificationService
-  ) {}
 
   ngOnInit() {
     this.subUsuario = this.loginService.usuario$.subscribe((user) => {

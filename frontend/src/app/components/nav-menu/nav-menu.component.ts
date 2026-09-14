@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -27,15 +27,15 @@ import { LoginService, UsuarioSesion } from '../../services/login.service';
   styleUrls: ['./nav-menu.component.scss'],
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
+  private loginService = inject(LoginService);
+  private router = inject(Router);
+  private menuController = inject(MenuController);
+
   usuario: UsuarioSesion | null = null;
   rolUsuarioLogueado: 'Administrador' | 'Editor' | 'Visualizador' | string = '';
   private subUsuario!: Subscription;
 
-  constructor(
-    private loginService: LoginService,
-    private router: Router,
-    private menuController: MenuController
-  ) {
+  constructor() {
     addIcons({
       documentTextOutline,
       timeOutline,

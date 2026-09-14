@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -61,6 +61,10 @@ type CampoNombre = 'nombre' | 'correo' | 'password' | 'rol_id' | 'activo';
   ],
 })
 export class GestionUsuariosPage implements OnInit, OnDestroy {
+  private usuarioService = inject(GestionUsuariosService);
+  private loginService = inject(LoginService);
+  private notification = inject(NotificationService);
+
   // === Propiedades principales ===
   rolUsuarioLogueado: 'Administrador' | 'Editor' | 'Visualizador' | string = '';
   usuarioActual: UsuarioSesion | null = null;
@@ -98,12 +102,6 @@ export class GestionUsuariosPage implements OnInit, OnDestroy {
     [2, 'Editor'],
     [3, 'Visualizador'],
   ]);
-
-  constructor(
-    private usuarioService: GestionUsuariosService,
-    private loginService: LoginService,
-    private notification: NotificationService
-  ) {}
 
   // ============================================================
   // Ciclo de vida

@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
 export class ExternalImportService {
-  private readonly base = '/import';
+  private api = inject(ApiService);
 
-  constructor(private api: ApiService) {}
+  private readonly base = '/import';
 
   /** Ping simple para validar el prefijo/ruta del backend */
   ping(): Observable<any> {

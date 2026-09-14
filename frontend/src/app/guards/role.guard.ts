@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   CanActivate,
   ActivatedRouteSnapshot,
@@ -13,7 +13,9 @@ import { LoginService } from '../services/login.service';
   providedIn: 'root',
 })
 export class RoleGuard implements CanActivate {
-  constructor(private loginService: LoginService, private router: Router) {}
+  private loginService = inject(LoginService);
+  private router = inject(Router);
+
 
   /**
    * Protege rutas según el rol del usuario logueado.

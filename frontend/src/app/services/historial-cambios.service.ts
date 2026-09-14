@@ -1,5 +1,5 @@
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -36,10 +36,10 @@ export interface HistorialCreate {
 // ============================================================
 @Injectable({ providedIn: 'root' })
 export class HistorialCambiosService {
+  private api = inject(ApiService);
+
   /** Prefijo del router FastAPI */
   private readonly base = '/historial';
-
-  constructor(private api: ApiService) {}
 
   // ============================================================
   // Obtener historial completo

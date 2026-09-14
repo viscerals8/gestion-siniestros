@@ -56,6 +56,11 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./tabla.page.scss'],
 })
 export class TablaPage implements OnInit, OnDestroy {
+  private loginService = inject(LoginService);
+  private tablaService = inject(TablaService);
+  private dynamicsService = inject(DynamicsService);
+  private notification = inject(NotificationService);
+
   // =====================================================
   // Datos de la tabla / formulario
   // =====================================================
@@ -91,13 +96,6 @@ export class TablaPage implements OnInit, OnDestroy {
 
   // Inyección por propiedad limpia y moderna
   private formFieldsService = inject(FormFieldsService);
-
-  constructor(
-    private loginService: LoginService,
-    private tablaService: TablaService,
-    private dynamicsService: DynamicsService,
-    private notification: NotificationService
-  ) {}
 
   // =====================================================
   // Ciclo de vida
