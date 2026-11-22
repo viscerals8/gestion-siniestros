@@ -67,45 +67,6 @@ gestion-siniestros/
 └── frontend/    # App Angular/Ionic
 ```
 
-## Cómo correrlo en local
-
-### Backend
-
-Requisitos: Python 3.11+, acceso a una instancia de SQL Server (o adaptar `DATABASE_URL` a otro motor), y el driver ODBC de SQL Server instalado en el sistema.
-
-```bash
-cd backend
-python -m venv venv
-venv\Scripts\activate        # En Linux/Mac: source venv/bin/activate
-pip install -r requirements.txt
-
-copy .env.example .env       # En Linux/Mac: cp .env.example .env
-# Editar .env con los datos reales de conexión a la base de datos
-
-uvicorn app.main:app --reload
-```
-
-La API queda disponible en `http://127.0.0.1:8000`, con documentación interactiva en `http://127.0.0.1:8000/docs`.
-
-Para correr los tests (no requieren conexión a SQL Server, usan SQLite en memoria):
-
-```bash
-pip install -r requirements-dev.txt
-pytest -v
-```
-
-### Frontend
-
-Requisitos: Node.js 18+ y Angular CLI (`npm install -g @angular/cli`).
-
-```bash
-cd frontend
-npm install
-ionic serve       # o: ng serve
-```
-
-Por defecto apunta a `http://127.0.0.1:8000/api` (ver `src/environments/environment.ts`). Si el backend corre en otra URL o el frontend se usa desde un dispositivo móvil, ajustar `apiBaseUrl` en ese archivo.
-
 ## Variables de entorno (backend)
 
 Ver `backend/.env.example` para la lista completa. Ninguna variable tiene un valor real por defecto en el código: si `.env` no está presente o incompleto, el backend no va a poder conectarse a la base de datos.
