@@ -18,6 +18,18 @@ El seguimiento de siniestros laborales (accidentes, sus datos de contrato, ubica
 - **Historial diferencial**: al editar un siniestro, el backend compara campo por campo el valor anterior contra el nuevo y solo registra los que efectivamente cambiaron.
 - **Campos dinámicos (EAV)**: además de los campos fijos del siniestro, se pueden definir campos adicionales desde la sección de administración, que se guardan y consultan sin necesidad de migrar la base de datos por cada campo nuevo.
 
+## Capturas
+
+| Login | Gestión de registros |
+|---|---|
+| ![Login](docs/capturas/01-login.png) | ![Gestión de registros](docs/capturas/04-gestion-registros-tabla.png) |
+| **Alta de siniestro (paso 1)** | **Alta de siniestro (paso 2: contrato)** |
+| ![Formulario de alta](docs/capturas/05-formulario-alta-siniestro.png) | ![Formulario paso 2](docs/capturas/06-formulario-paso2-contrato.png) |
+| **Historial de cambios** | **Campos dinámicos** |
+| ![Historial de cambios](docs/capturas/07-historial-cambios.png) | ![Campos dinámicos](docs/capturas/08-campos-dinamicos.png) |
+| **Administración de usuarios** | **API (Swagger)** |
+| ![Usuarios](docs/capturas/02-panel-administracion-usuarios.png) | ![Swagger](docs/capturas/09-api-backend-swagger.png) |
+
 ## Estado del proyecto
 
 Este es un proyecto en desarrollo activo, no una pieza terminada. La siguiente tabla es una foto honesta de en qué estado está cada módulo, no una lista de logros.
